@@ -1,5 +1,5 @@
-<div class="container"> 
-    <div class="row">   
+<div class="container">
+    <div class="row">
         <div class="col-xs-12 col-xs-offset-2">
             <p class="lead">This is the game to feed the farmer and pets. Please read the description of how to play this.</p>
         </div>
@@ -19,7 +19,7 @@
                 <!-- Default panel contents -->
                 <div class="panel-body">
                     <form class="form-horizontal" method="post" action="<?php echo BASEURL.'/feed'; ?>">
-                        <?php 
+                        <?php
                         $btn_action = "Start";
                         if(isset($_SESSION['game_id'])){
                             $btn_action = 'Resume';

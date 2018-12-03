@@ -19,7 +19,7 @@ class Utility{
      * @def configuration varriable
      * @scope public
      */
-     public $config;
+    public $config;
     /**
      *   Default Constructor
      *
@@ -47,7 +47,7 @@ class Utility{
         //parsing url
         $_url_arr  =  $this->parseUrl($parsedUrl);
         //getting page name on what basis page will be shown to the user
-        $page_name    = $_url_arr[0];        
+        $page_name    = $_url_arr[0];
         //checking page name and loading
         if (empty($page_name))
             $this->start_game();
@@ -146,7 +146,7 @@ class Utility{
             }
         }
         //getting total feed records after feeding       
-        $feed_records = $this->get_feed_records(); 
+        $feed_records = $this->get_feed_records();
         //getting total dead records after feeding       
         $died_records = $this->get_died_objects();
         /*check if game is over (if returns 1 => lost, if returns 2 => won else game is running)*/
@@ -161,7 +161,7 @@ class Utility{
      */
     private function start_game(){
         $title = 'Home';
-        $header_text = "Welcome to Farm Game";        
+        $header_text = "Welcome to Farm Game";
         include(VIEWPATH.'header.php');
         include(VIEWPATH.'index.php');
         include(VIEWPATH.'footer.php');
@@ -205,15 +205,15 @@ class Utility{
         {
             //getting all farm objects
             $farmobjects  = $this->get_all_farm_objects();
-            
+
             //getting farm object id into an array
             $farm_objects = array_map(function($v){
                 return $v['id'];
             },$farmobjects);
-            
+
             //getting died objects
             $died_objects_array = $this->get_died_objects();
-           
+
             //finding alive objects
             return array_diff($farm_objects, $died_objects_array);
         }
@@ -227,7 +227,7 @@ class Utility{
         /* getting all farm objects*/
 
         $q = "SELECT * FROM farmobjects";
-        return $this->db->_fetch_all($q);        
+        return $this->db->_fetch_all($q);
     }
 
 
@@ -244,7 +244,7 @@ class Utility{
             //storing farm object id into an array
             foreach ($died_objects as $key => $value) {
                 $died_objects_array[] = $value['farm_object_id'];
-            }        
+            }
         }
         return $died_objects_array;
     }
@@ -252,22 +252,32 @@ class Utility{
     /*
      *@def get feed records
      */
-    private function get_feed_records(){        
+    private function get_feed_records(){
         $game_feed_records = array();
         /* getting feed records*/
         if(isset($_SESSION['game_id'])){
             $q = "SELECT * FROM game WHERE game_id = :id ORDER BY id ASC";
-            $game_feed_records = $this->db->_fetch_all($q, array('id' => $_SESSION['game_id']));  
-        }  
-        return $game_feed_records;       
+            $game_feed_records = $this->db->_fetch_all($q, array('id' => $_SESSION['game_id']));
+        }
+        return $game_feed_records;
     }
 
     /*
      *@def get feed records
      */
-    private function insert_died_object(){        
-        /*query for getting & inserting data into died object table*/ 
-        if(isset($_SESSION['game_id'])){            
+    private function insert_died_object(){
+        /*query for getting & inserting data into died object table*/
+        if(isset($_SESSION['game_id'])){
+            /*
+             * #1055 - Expression #1 of SELECT list is not in GROUP BY clause and contains nonaggregated column
+             * which is not functionally dependent on columns in GROUP BY clause;
+             * this is incompatible with sql_mode=only_full_group_by in  5.7 version
+             */
+            $this->db->query("SET sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''))");
+            /*
+             * inserting died reocrds
+             * this query contains dead logic, find the round where object dead & inserting into died_object table
+             */
             $q = "INSERT INTO died_object (farm_object_id, game_id)
                     SELECT id AS farm_object_id, :game_id AS game_id
                     FROM
@@ -291,14 +301,14 @@ class Utility{
                                  WHEN type = 'bunny' AND (total_round - round_number) >= 8 THEN 1
                                  ELSE 0
                                 END ) = 1
-                    ON DUPLICATE KEY UPDATE game_id = :game_id_3"; 
+                    ON DUPLICATE KEY UPDATE game_id = :game_id_3";
             return $this->db->query($q, array('game_id' => $_SESSION['game_id'],
                 'game_id_1' => $_SESSION['game_id'],
                 'game_id_2' => $_SESSION['game_id'],
                 'game_id_3' => $_SESSION['game_id']
-                )); 
-        }  
-        return false;  
+            ));
+        }
+        return false;
     }
 
     /*@def check if game is over*/
@@ -309,14 +319,14 @@ class Utility{
             * getting all alive objects types
             * getting all alive objects types from farm objetcs array                  
             */
-            $alive_objects = $this->get_alive_objects();            
-            $alive_objects_type = array_map(function($v) use ($farm_objects){                 
+            $alive_objects = $this->get_alive_objects();
+            $alive_objects_type = array_map(function($v) use ($farm_objects){
                 return $farm_objects[array_search($v, array_column($farm_objects, 'id'))]['type'];
-            }, $alive_objects);                    
-            
+            }, $alive_objects);
+
             // getting if all winning objetcs are alive
             $_winning_alive_objects =  array_intersect(array('farmer','cow','bunny'), $alive_objects_type);
-            
+
             //check if farmer is died
             if(!in_array('farmer', $alive_objects_type)){
                 $this->game_over();
@@ -332,7 +342,7 @@ class Utility{
                 else{
                     return 1;
                 }
-                
+
             }
             // check if winning condition is fullfill before completed 50 rounds
             elseif(sizeof($_winning_alive_objects) < 3){
@@ -350,7 +360,7 @@ class Utility{
         {
             $_SESSION['last_game_id'] = $_SESSION['game_id'];
             unset($_SESSION['game_id']);
-        }        
+        }
     }
 }
 ?>

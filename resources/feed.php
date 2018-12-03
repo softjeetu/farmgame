@@ -17,17 +17,16 @@
                                 <?php echo $play_again_btn; ?>
                             </div>
                         <?php }else{ ?>
-                        <p class="h4 text-center">Click on <strong>Feed</strong> button to feed the Farmer & Animals.</p>
-                        <!-- start game button -->
-                        <div class="row">
-                            <div class="col-xs-offset-2 col-md-8 col-xs-offset-2">
-                                <button class="btn btn-info btn-block" type="submit" name="feed">
-                                    Feed
-                                </button>
-                                <hr>
+                            <p class="h4 text-center">Click on <strong>Feed</strong> button to feed the Farmer & Animals.</p>
+                            <!-- start game button -->
+                            <div class="row">
+                                <div class="col-xs-offset-2 col-md-8 col-xs-offset-2">
+                                    <button class="btn btn-info btn-block" type="submit" name="feed">
+                                        Feed
+                                    </button>
+                                    <hr>
+                                </div>
                             </div>
-
-                        </div>
                         <?php } ?>
                         <div class="row">
                             <div class="col-xs-offset-2 col-md-8 col-xs-offset-2">
@@ -37,37 +36,37 @@
                                         <th scope="col">#</th>
                                         <?php if(sizeof($farm_objects) > 0):
                                             foreach($farm_objects as $fo):
-                                                $th_bg_color = ''; 
-                                                $th_color = '';                            
+                                                $th_bg_color = '';
+                                                $th_color = '';
                                                 if(in_array($fo['id'], $died_records))
                                                 {
                                                     $th_bg_color = 'red';
-                                                    $th_color = '#fff';                                                   
+                                                    $th_color = '#fff';
                                                 }
                                                 ?>
-                                            <th scope="col" style="background:<?php echo $th_bg_color;?>; color:<?php echo $th_color; ?>;"><?php echo $fo['head_name'];?></th>
-                                        <?php endforeach;
+                                                <th scope="col" style="background:<?php echo $th_bg_color;?>; color:<?php echo $th_color; ?>;"><?php echo $fo['head_name'];?></th>
+                                            <?php endforeach;
                                         endif; ?>
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    <?php 
+                                    <?php
                                     if(sizeof($feed_records) > 0):
-                                    for($round = 1; $round <= sizeof($feed_records); $round++):?>
-                                    <tr>
-                                        <th scope="row">Round <?php echo $round;?></th>
-                                        <?php if(sizeof($farm_objects) > 0):
-                                            foreach($farm_objects as $fo):?>
-                                                <td>
-                                                    <?php 
-                                                        if(isset($feed_records[$round-1]['farm_object_id']) && $fo['id']==$feed_records[$round-1]['farm_object_id'])
-                                                            echo "Fed";
-                                                    ?>
-                                                </td>
-                                            <?php endforeach;
-                                        endif; ?>
-                                    </tr>
-                                    <?php endfor;
+                                        for($round = 1; $round <= sizeof($feed_records); $round++):?>
+                                            <tr>
+                                                <th scope="row">Round <?php echo $round;?></th>
+                                                <?php if(sizeof($farm_objects) > 0):
+                                                    foreach($farm_objects as $fo):?>
+                                                        <td>
+                                                            <?php
+                                                            if(isset($feed_records[$round-1]['farm_object_id']) && $fo['id']==$feed_records[$round-1]['farm_object_id'])
+                                                                echo "Fed";
+                                                            ?>
+                                                        </td>
+                                                    <?php endforeach;
+                                                endif; ?>
+                                            </tr>
+                                        <?php endfor;
                                     else:?>
                                         <tr>
                                             <td align="center" colspan="<?php echo 1+sizeof($farm_objects); ?>">

@@ -21,10 +21,10 @@ class Log {
 
     /**
      *   @void
-     *	Creates the log
+     *	 Creates the log
      *
      *   @param string $message the message which is written into the log.
-     *	@description:
+     *	 @description:
      *	 1. Checks if directory exists, if not, create one and call this method again.
      *	 2. Checks if log already exists.
      *	 3. If not, new log gets created. Log is written into the logs folder.

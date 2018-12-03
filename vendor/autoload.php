@@ -12,8 +12,8 @@ spl_autoload_register('_AutoLoader');
 
 function _AutoLoader($className)
 {
-     /*What it does?
-     imports files based on the namespace as folder and class as filename.*/
+    /*What it does?
+    imports files based on the namespace as folder and class as filename.*/
     $file = str_replace('\\',DIRECTORY_SEPARATOR, $className);
     require_once (__DIR__.'/'.$file . '.class.php');
 }
